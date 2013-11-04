@@ -120,7 +120,7 @@ end
 Dynamic Paperclip will generate the following route:
 
 ```ruby
-get '/system/users/:attachment/:id/:style', to: 'DynamicPaperclip::AttachmentStyles#generate_user'
+get '/system/users/:attachment/:id/dynamic_:definition', to: 'DynamicPaperclip::AttachmentStyles#generate_user'
 ```
 
 Now, in your view, you might call something like this:
