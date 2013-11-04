@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = DynamicPaperclip::VERSION
   s.author      = 'Jim Ryan'
   s.email       = ["jim@room118solutions.com"]
-  s.homepage    = "TODO"
+  s.homepage    = "http://github.com/room118solutions/dynamic_paperclip"
   s.summary     = "Generate Paperclip attachment styles on the fly"
   s.description = "Let's your views define attachment styles, and delays processing all the way to the first user who requests it."
 
