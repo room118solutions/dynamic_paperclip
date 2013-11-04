@@ -52,6 +52,10 @@ has_dynamic_attached_file :avatar
 
 You can continue defining styles there, too, you don't need to move over entirely to dynamic styles. You can have both!
 
+**Note:** Dynamic Paperclip requires that the ``:style`` **and** either the ``:id`` or ``:id_partition`` be included
+in the ``:url`` that you specify when defining the attachment. Paperclip includes them by default, so this only
+applies if you've specified your own.
+
 Then, whenever you'd like a URL to a dynamic style, simply call ``#dynamic_url`` instead of ``#url`` on the attachment,
 passing it the style definition that you would normally define in the ``:styles`` hash on ``has_attached_file``:
 
