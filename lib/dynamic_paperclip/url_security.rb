@@ -1,5 +1,5 @@
 module DynamicPaperclip
-  class UrlSecurity
+  module UrlSecurity
     def self.generate_hash(style_name)
       Digest::SHA1.hexdigest "#{DynamicPaperclip.config.secret}#{style_name}"
     end
