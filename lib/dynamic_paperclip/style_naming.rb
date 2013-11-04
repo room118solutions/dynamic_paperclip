@@ -2,9 +2,9 @@ module DynamicPaperclip
   module StyleNaming
     # Generate style name from style definition,
     # only supports strings at the moment
-    def self.dynamic_style_name_from_definition(options)
+    def self.dynamic_style_name_from_definition(options, uri_escape=true)
       if options.is_a?(String)
-        "dynamic_#{URI.escape(options)}".to_sym
+        "dynamic_#{uri_escape ? URI.escape(options) : options}".to_sym
       else
         raise 'Only String options are supported with dynamic attachments'
       end

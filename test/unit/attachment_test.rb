@@ -10,7 +10,7 @@ class AttachmentTest < ActiveSupport::TestCase
   should 'generate correct secure attachment URL when given a style definition' do
     DynamicPaperclip::Config.any_instance.stubs(:secret).returns('abc123')
 
-    assert_equal "/system/photos/images/000/000/001/dynamic_50x50%2523/rails.png?s=#{Digest::SHA1.hexdigest("abc123dynamic_50x50%23")}", photos(:rails).image.dynamic_url('50x50#')
+    assert_equal "/system/photos/images/000/000/001/dynamic_50x50%23/rails.png?s=#{Digest::SHA1.hexdigest("abc123dynamic_50x50%23")}", photos(:rails).image.dynamic_url('50x50#')
   end
 
   should 'raise error if no secret has been configured' do
