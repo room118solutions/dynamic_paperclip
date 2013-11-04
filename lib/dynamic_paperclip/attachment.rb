@@ -22,9 +22,7 @@ module DynamicPaperclip
       super.merge dynamic_styles
     end
 
-    def process_dynamic_style(definition)
-      style_name = StyleNaming.dynamic_style_name_from_definition(definition)
-
+    def process_dynamic_style(style_name)
       add_dynamic_style! style_name
       reprocess! style_name
     end
@@ -32,14 +30,13 @@ module DynamicPaperclip
     def dynamic_url(definition)
       raise DynamicPaperclip::Errors::SecretNotSet, "No secret has been configured. Please run the dynamic_paperclip:install generator." unless DynamicPaperclip.config.secret.present?
 
-      escaped_style_name = StyleNaming.dynamic_style_name_from_definition(definition)
-      unescaped_style_name = StyleNaming.dynamic_style_name_from_definition(definition, false)
+      style_name = StyleNaming.dynamic_style_name_from_definition(definition)
 
-      url = url(unescaped_style_name)
+      url = url(style_name)
 
       delimiter_char = url.match(/\?.+=/) ? '&' : '?'
 
-      "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(escaped_style_name)}"
+      "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}"
     end
 
     private
