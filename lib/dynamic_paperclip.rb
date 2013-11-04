@@ -6,6 +6,7 @@ require "dynamic_paperclip/attachment"
 require "dynamic_paperclip/has_attached_file"
 require "dynamic_paperclip/paperclip_shim"
 require "dynamic_paperclip/url_security"
+require "dynamic_paperclip/style_naming"
 
 module DynamicPaperclip
   extend self

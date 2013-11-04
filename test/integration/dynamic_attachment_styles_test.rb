@@ -9,7 +9,7 @@ class DynamicAttachmentStylesTest < ActionDispatch::IntegrationTest
     path_to_dynamic_style = photo.image.path('dynamic_100x100')
 
     # This style should not exist yet
-    assert !File.exists?(path_to_dynamic_style)
+    assert !File.exists?(path_to_dynamic_style), "style to be generated already exists"
 
     # The style should be created right now when we request it
     get photo.image.dynamic_url('100x100')

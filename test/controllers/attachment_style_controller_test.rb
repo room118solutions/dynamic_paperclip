@@ -2,10 +2,7 @@ require 'test_helper'
 
 class Foo < ActiveRecord::Base
   has_dynamic_attached_file :image,
-    :url    => '/system/:class/:attachment/:id/:style/:filename',
-    :styles => {
-      :thumb => '50x50#'
-    }
+    :url    => '/system/:class/:attachment/:id/:style/:filename'
 
   has_dynamic_attached_file :image_with_id_partition_in_url,
     :url => '/system/:class/:attachment/:id_partition/:style/:filename'
@@ -15,6 +12,7 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
   setup do
     @foo = stub('foo')
     @attachment = stub('image attachment', :path => File.join(FIXTURES_DIR, 'rails.png'), :content_type => 'image/jpeg')
+    @attachment.stubs(:exists?).returns(true)
 
     Foo.stubs(:find).with('1').returns @foo
     @foo.stubs(:image).returns @attachment
@@ -41,38 +39,27 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
       }
   end
 
-  should 'not process style if it is not dynamic' do
+  should 'not process style if it already exists' do
+    @attachment.expects(:exists?).with(:dynamic_42x42).returns(true)
     @attachment.expects(:process_dynamic_style).never
 
     get :generate_foo,
         :attachment => 'images',
         :id         => '1',
-        :style      => 'thumb',
-        :filename   => 'file',
-        :use_route  => :dynamic_paperclip_engine
-  end
-
-  should 'not process style if it is dynamic but already exists' do
-    @attachment.expects(:exists?).with('dynamic_42x42').returns(true)
-    @attachment.expects(:process_dynamic_style).never
-
-    get :generate_foo,
-        :attachment => 'images',
-        :id         => '1',
-        :style      => 'dynamic_42x42',
+        :definition => '42x42',
         :filename   => 'file',
         :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
   end
 
   should 'process style if it is dynamic and does not exist' do
-    @attachment.expects(:exists?).with('dynamic_42x42').returns(false)
+    @attachment.expects(:exists?).with(:dynamic_42x42).returns(false)
     @attachment.expects(:process_dynamic_style).once
 
     get :generate_foo,
         :attachment => 'images',
         :id         => '1',
-        :style      => 'dynamic_42x42',
+        :definition => '42x42',
         :filename   => 'file',
         :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
@@ -84,8 +71,9 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
     get :generate_foo,
         :attachment => 'images',
         :id         => '1',
-        :style      => 'thumb',
+        :definition => '42x42',
         :filename   => 'file',
+        :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
   end
 
@@ -96,18 +84,17 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
     get :generate_foo,
         :attachment   => 'image_with_id_partition_in_urls',
         :id_partition => '000/010/042',
-        :style        => 'thumb',
+        :definition   => '42x42',
         :filename     => 'file',
+        :s            => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route    => :dynamic_paperclip_engine
   end
 
   should 'respond with correct content type' do
-    @attachment.stubs(:exists?).returns(true)
-
     get :generate_foo,
         :attachment => 'images',
         :id         => '1',
-        :style      => 'dynamic_42x42',
+        :definition => '42x42',
         :filename   => 'file',
         :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
@@ -116,15 +103,13 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
   end
 
   should 'send image to client with correct content type and disposition' do
-    @attachment.stubs(:exists?).returns(true)
-
     @controller.stubs(:render)
     @controller.expects(:send_file).with(@attachment.path, :disposition => 'inline', :type => @attachment.content_type)
 
     get :generate_foo,
         :attachment => 'images',
         :id         => '1',
-        :style      => 'dynamic_42x42',
+        :definition => '42x42',
         :filename   => 'file',
         :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
@@ -135,7 +120,7 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
       get :generate_foo,
           :attachment => 'images',
           :id         => '1',
-          :style      => 'dynamic_42x42',
+          :definition => '42x42',
           :filename   => 'file',
           :s          => 'this is an invalid hash',
           :use_route  => :dynamic_paperclip_engine

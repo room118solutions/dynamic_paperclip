@@ -22,43 +22,29 @@ module DynamicPaperclip
       super.merge dynamic_styles
     end
 
-    def process_dynamic_style(name)
-      add_dynamic_style! name
-      reprocess! name
+    def process_dynamic_style(definition)
+      style_name = StyleNaming.dynamic_style_name_from_definition(definition)
+
+      add_dynamic_style! style_name
+      reprocess! style_name
     end
 
     def dynamic_url(definition)
       raise DynamicPaperclip::Errors::SecretNotSet, "No secret has been configured. Please run the dynamic_paperclip:install generator." unless DynamicPaperclip.config.secret.present?
 
-      style_name = dynamic_style_name_from_definition(definition)
+      style_name = StyleNaming.dynamic_style_name_from_definition(definition)
 
       url = url(style_name)
 
       delimiter_char = url.match(/\?.+=/) ? '&' : '?'
 
-      "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}"
+      "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}".html_safe
     end
 
     private
 
-      # Generate style name from style definition,
-      # only supports strings at the moment
-      def dynamic_style_name_from_definition(options)
-        if options.is_a?(String)
-          "dynamic_#{URI.escape(options)}".to_sym
-        else
-          raise 'Only String options are supported with dynamic attachments'
-        end
-      end
-
-      # Reverse of #dynamic_style_name_from_definition,
-      # given a dynamic style name, extracts the definition (style options)
-      def style_definition_from_dynamic_style_name(name)
-        URI.unescape name[8..-1]
-      end
-
       def add_dynamic_style!(name)
-        @dynamic_styles[name.to_sym] = Paperclip::Style.new(name, style_definition_from_dynamic_style_name(name), self)
+        @dynamic_styles[name.to_sym] = Paperclip::Style.new(name, StyleNaming.style_definition_from_dynamic_style_name(name), self)
       end
   end
 end

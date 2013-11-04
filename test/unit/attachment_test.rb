@@ -32,9 +32,9 @@ class AttachmentTest < ActiveSupport::TestCase
   should 'add dynamic style to #styles and reprocess it when a dynamic style name is passed to #process_dynamic_style' do
     attachment = photos(:rails).image
 
-    attachment.expects(:reprocess!).with('dynamic_42x42').once
+    attachment.expects(:reprocess!).with(:dynamic_42x42).once
 
-    attachment.process_dynamic_style 'dynamic_42x42'
+    attachment.process_dynamic_style '42x42'
 
     assert_equal '42x42', attachment.styles[:dynamic_42x42].geometry
   end

@@ -33,7 +33,11 @@ module DynamicPaperclip
       end
 
       def add_route!
-        url = (@options[:url] || Attachment.default_options[:url]).gsub(':id_partition', '*id_partition').gsub(':class', @klass.name.underscore.pluralize)
+        url = (@options[:url] || Attachment.default_options[:url]).
+              gsub(':id_partition', '*id_partition').
+              gsub(':class'       , @klass.name.underscore.pluralize).
+              gsub(':style'       , "dynamic_:definition")
+
         action = "generate_#{@klass.name.underscore}"
         default_attachment = @name.to_s.downcase.pluralize
 
