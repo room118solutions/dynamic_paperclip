@@ -34,10 +34,14 @@ module DynamicPaperclip
 
       def add_route!
         url = (@options[:url] || Attachment.default_options[:url]).gsub(':id_partition', '*id_partition').gsub(':class', @klass.name.underscore.pluralize)
+        action = "generate_#{@klass.name.underscore}"
+        default_attachment = @name.to_s.downcase.pluralize
 
-        ActionDispatch::Routing::Mapper.new(Rails.application.routes).get url,
-          :to => "DynamicPaperclip::AttachmentStyles#generate_#{@klass.name.underscore}",
-          :defaults => { :attachment => @name.to_s.downcase.pluralize }
+        Rails.application.routes do
+          get url,
+            :to => "DynamicPaperclip::AttachmentStyles##{action}",
+            :defaults => { :attachment => default_attachment }
+        end
       end
   end
 end
