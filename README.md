@@ -122,7 +122,7 @@ get '/system/users/:attachment/:id/:style', to: 'DynamicPaperclip::AttachmentSty
 Now, in your view, you might call something like this:
 
 ```ruby
-@photo.avatar.dynamic_url('50x50')
+@user.avatar.dynamic_url('50x50')
 ```
 
 Which will return the following url (assuming a JPG avatar and a User ID of 42):
