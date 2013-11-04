@@ -3,7 +3,7 @@ PATH
   specs:
     dynamic_paperclip (0.0.1)
       paperclip
-      rails (~> 3.2.14)
+      rails (> 3.2)
 
 GEM
   remote: https://rubygems.org/
