@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dynamic_paperclip (0.0.1)
+    dynamic_paperclip (0.0.3)
       paperclip (>= 3.5.0)
       rails (> 3.2)
 
