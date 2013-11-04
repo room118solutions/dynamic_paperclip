@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Generate Paperclip attachment styles on the fly"
   s.description = "Let's your views define attachment styles, and delays processing all the way to the first user who requests it."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "> 3.2"
