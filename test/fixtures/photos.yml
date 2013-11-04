@@ -1,0 +1,4 @@
+rails:
+  id: 1
+  image_file_name: 'rails.png'
+  image_content_type: 'image/png'
