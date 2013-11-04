@@ -8,5 +8,11 @@ module DynamicPaperclip
 
     class MissingID < DynamicPaperclip::Error
     end
+
+    class SecretNotSet < DynamicPaperclip::Error
+    end
+
+    class InvalidHash < DynamicPaperclip::Error
+    end
   end
 end

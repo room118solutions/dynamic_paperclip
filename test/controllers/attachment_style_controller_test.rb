@@ -61,6 +61,7 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
         :id         => '1',
         :style      => 'dynamic_42x42',
         :filename   => 'file',
+        :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
   end
 
@@ -73,6 +74,7 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
         :id         => '1',
         :style      => 'dynamic_42x42',
         :filename   => 'file',
+        :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
   end
 
@@ -107,6 +109,7 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
         :id         => '1',
         :style      => 'dynamic_42x42',
         :filename   => 'file',
+        :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
 
     assert_equal 'image/jpeg', @response.header['Content-Type']
@@ -123,6 +126,19 @@ class DynamicPaperclip::AttachmentStylesControllerTest < ActionController::TestC
         :id         => '1',
         :style      => 'dynamic_42x42',
         :filename   => 'file',
+        :s          => DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42'),
         :use_route  => :dynamic_paperclip_engine
+  end
+
+  should 'raise error if hash does not match style name' do
+    assert_raises(DynamicPaperclip::Errors::InvalidHash) do
+      get :generate_foo,
+          :attachment => 'images',
+          :id         => '1',
+          :style      => 'dynamic_42x42',
+          :filename   => 'file',
+          :s          => 'this is an invalid hash',
+          :use_route  => :dynamic_paperclip_engine
+      end
   end
 end

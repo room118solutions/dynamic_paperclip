@@ -20,11 +20,14 @@ module DynamicPaperclip
 
         attachment = klass.find(id).send(attachment_name)
 
-        # Only process style if it's dynamic and doesn't exist,
+        # Only validate style name if it's dynamic,
+        # and only process style if it's dynamic and doesn't exist,
         # otherwise we may just be fielding a request for
         # an existing style (i.e. serve_static_assets is true)
-        if params[:style] =~ /^dynamic_/ && !attachment.exists?(params[:style])
-          attachment.process_dynamic_style params[:style]
+        if params[:style] =~ /^dynamic_/
+          raise Errors::InvalidHash unless DynamicPaperclip::UrlSecurity.valid_hash?(params[:s], params[:style])
+
+          attachment.process_dynamic_style params[:style] unless attachment.exists?(params[:style])
         end
 
         send_file attachment.path(params[:style]), :disposition => 'inline', :type => attachment.content_type

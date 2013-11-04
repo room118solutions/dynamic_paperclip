@@ -28,7 +28,15 @@ module DynamicPaperclip
     end
 
     def dynamic_url(definition)
-      url dynamic_style_name_from_definition definition
+      raise DynamicPaperclip::Errors::SecretNotSet, "No secret has been configured. Please run the dynamic_paperclip:install generator." unless DynamicPaperclip.config.secret.present?
+
+      style_name = dynamic_style_name_from_definition(definition)
+
+      url = url(style_name)
+
+      delimiter_char = url.match(/\?.+=/) ? '&' : '?'
+
+      "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}"
     end
 
     private

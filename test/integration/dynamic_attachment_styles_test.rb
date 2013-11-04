@@ -4,13 +4,15 @@ class DynamicAttachmentStylesTest < ActionDispatch::IntegrationTest
   fixtures :photos
 
   should 'generate dynamic style and send it to the client' do
-    path_to_dynamic_style = Photo.find(1).image.path('dynamic_100x100')
+    photo = photos(:rails)
+
+    path_to_dynamic_style = photo.image.path('dynamic_100x100')
 
     # This style should not exist yet
     assert !File.exists?(path_to_dynamic_style)
 
-    # The style should be created right now
-    get '/system/photos/images/000/000/001/dynamic_100x100/rails.png'
+    # The style should be created right now when we request it
+    get photo.image.dynamic_url('100x100')
 
     assert_response :success
     assert_equal 'image/png', @response.headers['Content-Type']
