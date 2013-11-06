@@ -13,8 +13,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     run_generator
 
-    assert_file "config/initializers/dynamic_paperclip.rb", <<-init
-DynamicPaperclip.config.secret = 'supersecurestring'
-init
+    assert_file "config/initializers/dynamic_paperclip.rb", "DynamicPaperclip.config.secret = 'supersecurestring'"
   end
 end
