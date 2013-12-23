@@ -2,8 +2,10 @@ PATH
   remote: .
   specs:
     dynamic_paperclip (0.0.4)
-      paperclip (>= 3.5.0)
-      rails (> 3.2)
+      actionpack (>= 3.2)
+      activesupport
+      paperclip (>= 3.5.1)
+      rack
 
 GEM
   remote: https://rubygems.org/
@@ -43,14 +45,14 @@ GEM
       climate_control (>= 0.0.3, < 1.0)
     erubis (2.7.0)
     hike (1.2.3)
-    i18n (0.6.5)
+    i18n (0.6.9)
     journey (1.0.4)
     json (1.8.1)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     metaclass (0.0.1)
-    mime-types (1.25)
+    mime-types (1.25.1)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
     multi_json (1.8.2)
@@ -110,5 +112,6 @@ PLATFORMS
 DEPENDENCIES
   dynamic_paperclip!
   mocha
+  rails (> 3.2)
   shoulda
   sqlite3

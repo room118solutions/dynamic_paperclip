@@ -1,9 +1,9 @@
 module DynamicPaperclip
   class HasAttachedFile < Paperclip::HasAttachedFile
-    def initialize(klass, name, options)
-      super
+    def register_new_attachment
+      DynamicPaperclip::AttachmentRegistry.register(@klass, @name, @options)
 
-      add_route!
+      super
     end
 
     private
@@ -29,22 +29,6 @@ module DynamicPaperclip
           else
             attachment
           end
-        end
-      end
-
-      def add_route!
-        url = (@options[:url] || Attachment.default_options[:url]).
-              gsub(':id_partition', '*id_partition').
-              gsub(':class'       , @klass.name.underscore.pluralize).
-              gsub(':style'       , "dynamic_:definition")
-
-        action = "generate_#{@klass.name.underscore}"
-        default_attachment = @name.to_s.downcase.pluralize
-
-        Rails.application.routes do
-          get url,
-            :to => "DynamicPaperclip::AttachmentStyles##{action}",
-            :defaults => { :attachment => default_attachment }
         end
       end
   end
