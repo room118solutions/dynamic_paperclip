@@ -48,11 +48,12 @@ module DynamicPaperclip
     private
 
       def regexp_for_attachment_url(klass, url)
-        Regexp.new url.
+        Regexp.new '^' + url.
+          gsub('.'            , '\.').
           gsub(':id_partition', '(?<id>.*)').
           gsub(':class'       , klass.name.underscore.pluralize).
           gsub(':style'       , "dynamic_#{url_named_capture_group('definition')}").
-          gsub(/\:(\w+)/      , url_named_capture_group('\1'))
+          gsub(/\:(\w+)/      , url_named_capture_group('\1')) + '$'
       end
 
       def url_named_capture_group(name)
