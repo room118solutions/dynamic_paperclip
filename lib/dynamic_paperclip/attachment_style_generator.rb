@@ -27,7 +27,7 @@ module DynamicPaperclip
 
           # Only process style if it doesn't exist,
           # otherwise we may just be fielding a request for
-          # an existing style (i.e. serve_static_assets is true)
+          # an existing style
           attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
           return [
