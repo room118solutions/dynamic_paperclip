@@ -156,7 +156,7 @@ Contributing
 
 Known Issues
 ------------
-- [ ] Dynamic attachments aren't registered in time when cache classing is disabled (Rails development, etc.).
-      Since we register the attachment when it's defined, a request for a dynamic attachment in an environment
-      where the class isn't preloaded will pass through the middleware, since the attachment won't be registered
-      yet, and never generate.
+- Dynamic attachments aren't registered in time when class caching is disabled (Rails development, etc.).
+  Since we register the attachment when it's defined, a request for a dynamic attachment in an environment
+  where the class isn't preloaded will pass through the middleware, since the attachment won't be registered
+  yet, and never generate.
