@@ -86,9 +86,10 @@ class DynamicPaperclip::AttachmentStyleGeneratorTest < Test::Unit::TestCase
     assert last_response.ok?
   end
 
-  should 'raise error if hash does not match style name' do
-    assert_raises(DynamicPaperclip::Errors::InvalidHash) do
-      get '/system/foos/images/1/dynamic_42x42/file', { s: 'this is an invalid hash' }
-    end
+  should '403 with empty body if hash does not match style name' do
+    get '/system/foos/images/1/dynamic_42x42/file', { s: 'this is an invalid hash' }
+
+    assert_equal 403, last_response.status
+    assert_equal '', last_response.body
   end
 end

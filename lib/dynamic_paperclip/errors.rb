@@ -5,8 +5,5 @@ module DynamicPaperclip
   module Errors
     class SecretNotSet < DynamicPaperclip::Error
     end
-
-    class InvalidHash < DynamicPaperclip::Error
-    end
   end
 end

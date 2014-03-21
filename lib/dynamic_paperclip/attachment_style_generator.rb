@@ -23,22 +23,27 @@ module DynamicPaperclip
           style_name = StyleNaming.dynamic_style_name_from_definition(URI.unescape(match[:definition]), false)
 
           # Validate URL hash against requested style name
-          raise Errors::InvalidHash unless DynamicPaperclip::UrlSecurity.valid_hash?(request.params['s'], style_name)
+          if DynamicPaperclip::UrlSecurity.valid_hash?(request.params['s'], style_name)
 
-          # Only process style if it doesn't exist,
-          # otherwise we may just be fielding a request for
-          # an existing style
-          attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
+            # Only process style if it doesn't exist,
+            # otherwise we may just be fielding a request for
+            # an existing style
+            attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
-          return [
-            200,
-            {
-              'Content-Type' => attachment.content_type,
-              'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
-            },
-            ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
-          ]
+            return [
+              200,
+              {
+                'Content-Type' => attachment.content_type,
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
+              },
+              ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
+            ]
+          else
+            # Invalid hash, just 403
+
+            return [403, {}, []]
+          end
         end
       end
 
