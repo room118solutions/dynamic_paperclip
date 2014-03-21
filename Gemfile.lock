@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dynamic_paperclip (0.0.4)
+    dynamic_paperclip (1.0.0a)
       actionpack (>= 3.2)
       activesupport
       paperclip (>= 3.5.1)
