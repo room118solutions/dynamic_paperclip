@@ -13,7 +13,11 @@ module DynamicPaperclip
         style_position = path_with_wildcard.index('dynamic_*')
 
         Dir.glob(path_with_wildcard) do |file|
-          add_dynamic_style! file[style_position..-1].split('/').first
+          style_name = file[style_position..-1].split('/').first
+
+          # In the event that the style name is used as the filename,
+          # we want to remove the extension for our style name
+          add_dynamic_style! File.basename(style_name, File.extname(style_name))
         end
       end
     end
