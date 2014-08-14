@@ -38,4 +38,17 @@ class AttachmentTest < ActiveSupport::TestCase
 
     assert_equal '42x42', attachment.styles[:dynamic_42x42].geometry
   end
+
+  should 'delete styles passed to #delete_styles and maintain existing delete queued' do
+    attachment = photos(:rails).image
+
+    attachment.instance_variable_set :@queued_for_delete, [:thumb]
+
+    attachment.expects(:queue_some_for_delete).with(:foo, :bar)
+    attachment.expects(:flush_deletes)
+
+    attachment.delete_styles :foo, :bar
+
+    assert_equal [:thumb], attachment.instance_variable_get(:@queued_for_delete)
+  end
 end

@@ -43,6 +43,17 @@ module DynamicPaperclip
       "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}"
     end
 
+    # Immediately deletes given styles without impacting existing delete queue
+    def delete_styles(*styles)
+      old_delete_queue = @queued_for_delete
+
+      @queued_for_delete = []
+      queue_some_for_delete *styles
+      flush_deletes
+
+      @queued_for_delete = old_delete_queue
+    end
+
     private
 
       def add_dynamic_style!(name)

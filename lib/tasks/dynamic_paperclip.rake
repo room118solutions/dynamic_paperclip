@@ -23,8 +23,7 @@ namespace :dynamic_paperclip do
 
         puts "Deleting: #{attachment.path(style_name)}"
 
-        attachment.send :queue_some_for_delete, style_name
-        attachment.flush_deletes
+        attachment.delete_styles style_name
       end
     end
 
