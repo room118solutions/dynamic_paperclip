@@ -22,7 +22,7 @@ class DynamicPaperclip::AttachmentStyleGeneratorTest < Test::Unit::TestCase
     @attachment = stub('image attachment', :path => File.join(FIXTURES_DIR, 'rails.png'), :content_type => 'image/jpeg')
     @attachment.stubs(:exists?).returns(true)
 
-    Foo.stubs(:find).with(1).returns @foo
+    Foo.stubs(:find_by_id).with(1).returns @foo
     @foo.stubs(:image).returns @attachment
   end
 
@@ -41,14 +41,14 @@ class DynamicPaperclip::AttachmentStyleGeneratorTest < Test::Unit::TestCase
   end
 
   should 'find record when an ID is used' do
-    Foo.expects(:find).with(1).returns @foo
+    Foo.expects(:find_by_id).with(1).returns @foo
 
     get '/system/foos/images/1/dynamic_42x42/file', { s: DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42') }
   end
 
   should 'find record when an ID partition is used' do
     @foo.stubs(:image_with_id_partition_in_url).returns @attachment
-    Foo.expects(:find).with(10042).returns @foo
+    Foo.expects(:find_by_id).with(10042).returns @foo
 
     get '/system/foos/image_with_id_partition_in_urls/000/010/042/dynamic_42x42/file', { s: DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42') }
   end
@@ -90,6 +90,15 @@ class DynamicPaperclip::AttachmentStyleGeneratorTest < Test::Unit::TestCase
     get '/system/foos/images/1/dynamic_42x42/file', { s: 'this is an invalid hash' }
 
     assert_equal 403, last_response.status
+    assert_equal '', last_response.body
+  end
+
+  should '404 with empty body if record can not be found' do
+    Foo.expects(:find_by_id).with(42).returns nil
+
+    get '/system/foos/images/42/dynamic_42x42/file'
+
+    assert_equal 404, last_response.status
     assert_equal '', last_response.body
   end
 end
