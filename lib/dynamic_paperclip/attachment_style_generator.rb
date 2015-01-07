@@ -16,41 +16,33 @@ module DynamicPaperclip
       DynamicPaperclip::AttachmentRegistry.each_definition do |klass, name, options|
         if match = regexp_for_attachment_url(klass, (options[:url] || Attachment.default_options[:url])).match(request.path)
           id = id_from_partition(match[:id])
-          record = klass.find_by_id(id)
+          attachment = klass.find(id).send(name)
 
-          if record
-            attachment = record.send(name)
+          # The definition will be escaped twice in the URL, so we need to unescape it once.
+          # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
+          style_name = StyleNaming.dynamic_style_name_from_definition(URI.unescape(match[:definition]), false)
 
-            # The definition will be escaped twice in the URL, so we need to unescape it once.
-            # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
-            style_name = StyleNaming.dynamic_style_name_from_definition(URI.unescape(match[:definition]), false)
+          # Validate URL hash against requested style name
+          if DynamicPaperclip::UrlSecurity.valid_hash?(request.params['s'], style_name)
 
-            # Validate URL hash against requested style name
-            if DynamicPaperclip::UrlSecurity.valid_hash?(request.params['s'], style_name)
+            # Only process style if it doesn't exist,
+            # otherwise we may just be fielding a request for
+            # an existing style
+            attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
-              # Only process style if it doesn't exist,
-              # otherwise we may just be fielding a request for
-              # an existing style
-              attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
-
-              return [
-                200,
-                {
-                  'Content-Type' => attachment.content_type,
-                  'Content-Transfer-Encoding' => 'binary',
-                  'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
-                },
-                ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
-              ]
-            else
-              # Invalid hash, just 403
-
-              return [403, {}, []]
-            end
+            return [
+              200,
+              {
+                'Content-Type' => attachment.content_type,
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
+              },
+              ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
+            ]
           else
-            # Can't find record, just 404
+            # Invalid hash, just 403
 
-            return [404, {}, []]
+            return [403, {}, []]
           end
         end
       end
