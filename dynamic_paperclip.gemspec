@@ -27,4 +27,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'shoulda'
   s.add_development_dependency 'mocha'
   s.add_development_dependency "rails", "~> 4.2.8"
+  s.add_development_dependency 'appraisal'
 end
