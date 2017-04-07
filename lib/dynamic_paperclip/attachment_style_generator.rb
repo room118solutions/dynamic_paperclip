@@ -20,7 +20,7 @@ module DynamicPaperclip
 
           # The definition will be escaped twice in the URL, so we need to unescape it once.
           # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
-          style_name = StyleNaming.dynamic_style_name_from_definition(URI.unescape(match[:definition]), false)
+          style_name = StyleNaming.dynamic_style_name_from_definition(CGI.unescape(match[:definition]), false)
 
           # Validate URL hash against requested style name
           if DynamicPaperclip::UrlSecurity.valid_hash?(request.params['s'], style_name)
