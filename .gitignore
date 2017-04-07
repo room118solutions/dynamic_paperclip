@@ -9,3 +9,4 @@ test/tmp/*
 .ruby-gemset
 .ruby-version
 dynamic_paperclip*.gem
+Gemfile.lock
