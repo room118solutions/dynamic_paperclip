@@ -8,7 +8,7 @@ class Foo < ActiveRecord::Base
     :url => '/system/:class/:attachment/:id_partition/:style/:filename'
 end
 
-class DynamicPaperclip::AttachmentStyleGeneratorTest < Test::Unit::TestCase
+class DynamicPaperclip::AttachmentStyleGeneratorTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
 
   def app
