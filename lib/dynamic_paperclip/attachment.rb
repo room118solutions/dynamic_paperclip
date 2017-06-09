@@ -10,14 +10,18 @@ module DynamicPaperclip
       # Add existing dynamic styles
       if instance.persisted?
         path_with_wildcard = path('dynamic_*')
-        style_position = path_with_wildcard.index('dynamic_*')
 
-        Dir.glob(path_with_wildcard) do |file|
-          style_name = file[style_position..-1].split('/').first
+        # Could be nil if the attachment doesn't exist
+        if path_with_wildcard
+          style_position = path_with_wildcard.index('dynamic_*')
 
-          # In the event that the style name is used as the filename,
-          # we want to remove the extension for our style name
-          add_dynamic_style! File.basename(style_name, File.extname(style_name))
+          Dir.glob(path_with_wildcard) do |file|
+            style_name = file[style_position..-1].split('/').first
+
+            # In the event that the style name is used as the filename,
+            # we want to remove the extension for our style name
+            add_dynamic_style! File.basename(style_name, File.extname(style_name))
+          end
         end
       end
     end

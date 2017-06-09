@@ -51,4 +51,12 @@ class AttachmentTest < ActiveSupport::TestCase
 
     assert_equal [:thumb], attachment.instance_variable_get(:@queued_for_delete)
   end
+
+  should 'return true from query method when attachment is set' do
+    assert photos(:rails).image?
+  end
+
+  should 'return false from query method when attachment is not set' do
+    assert !photos(:without_image).image?
+  end
 end
