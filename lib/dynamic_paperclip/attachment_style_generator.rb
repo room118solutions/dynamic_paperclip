@@ -30,15 +30,17 @@ module DynamicPaperclip
             # an existing style
             attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
-            return [
-              200,
-              {
-                'Content-Type' => attachment.content_type,
-                'Content-Transfer-Encoding' => 'binary',
-                'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
-              },
-              ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
-            ]
+            if defined?(ActionController::DataStreaming::FileBody)
+              return [
+                200,
+                {
+                  'Content-Type' => attachment.content_type,
+                  'Content-Transfer-Encoding' => 'binary',
+                  'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
+                },
+                ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
+              ]
+            end
           else
             # Invalid hash, just 403
 
