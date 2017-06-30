@@ -42,7 +42,7 @@ module DynamicPaperclip
 
       url = url(style_name)
 
-      delimiter_char = url.match(/\?.+=/) ? '&' : '?'
+      delimiter_char = url.match(/\?/) ? '&' : '?'
 
       "#{url}#{delimiter_char}s=#{UrlSecurity.generate_hash(style_name)}"
     end
