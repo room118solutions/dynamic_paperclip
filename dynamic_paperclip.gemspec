@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.add_dependency "paperclip", ">= 3.5.1"
   s.add_dependency 'activesupport'
 
-  # Required for ActionController::DataStreaming::FileBody
-  s.add_dependency "actionpack", ">= 3.2"
+  # Required for ActionDispatch::Response::FileBody
+  s.add_dependency "actionpack", ">= 5.0"
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'shoulda'
