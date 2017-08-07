@@ -19,7 +19,7 @@ module DynamicPaperclip
           attachment = klass.find(id).send(name)
 
           # When the filename is wrong, return a 404
-          if attachment.original_filename != URI.unescape(match[:filename])
+          if !attachment.exists? || attachment.original_filename != URI.unescape(match[:filename])
             return [404, {}, []]
           end
 
