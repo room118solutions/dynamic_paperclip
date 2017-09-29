@@ -31,5 +31,11 @@ module DynamicPaperclip
           end
         end
       end
+
+      def add_active_record_callbacks
+        name = @name
+        @klass.send(:after_save) { send(name).send(:delete_dynamic_files) }
+        super
+      end
   end
 end
