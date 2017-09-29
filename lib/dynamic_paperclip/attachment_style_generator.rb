@@ -20,6 +20,11 @@ module DynamicPaperclip
           id = id_from_partition(match[:id])
           attachment = klass.find(id).send(name)
 
+          # When the filename is wrong, return a 404
+          if !attachment.exists? || attachment.original_filename != URI.unescape(match[:filename])
+            return [404, {}, []]
+          end
+
           # The definition will be escaped twice in the URL, so we need to unescape it once.
           # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
           style_name = StyleNaming.dynamic_style_name_from_definition(CGI.unescape(match[:definition]), false)
