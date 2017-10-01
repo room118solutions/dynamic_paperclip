@@ -1,5 +1,7 @@
 require 'rack/request'
-require 'action_controller/metal/data_streaming'
+
+require 'action_controller/metal/data_streaming' # For Rails 4
+require 'action_dispatch/http/response.rb' # For Rails 5
 
 module DynamicPaperclip
   class AttachmentStyleGenerator
@@ -18,6 +20,11 @@ module DynamicPaperclip
           id = id_from_partition(match[:id])
           attachment = klass.find(id).send(name)
 
+          # When the filename is wrong, return a 404
+          if !attachment.exists? || attachment.original_filename != URI.unescape(match[:filename])
+            return [404, {}, []]
+          end
+
           # The definition will be escaped twice in the URL, so we need to unescape it once.
           # We should always reference dynamic style names after escaping once - that's how they reside on the FS.
           style_name = StyleNaming.dynamic_style_name_from_definition(CGI.unescape(match[:definition]), false)
@@ -30,6 +37,9 @@ module DynamicPaperclip
             # an existing style
             attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
+            # The FileBody class has been moved to another module in Rails 5
+            file_body = defined?(ActionController::DataStreaming::FileBody) ? ActionController::DataStreaming::FileBody : ActionDispatch::Response::FileBody
+
             return [
               200,
               {
@@ -37,7 +47,7 @@ module DynamicPaperclip
                 'Content-Transfer-Encoding' => 'binary',
                 'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
               },
-              ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
+              file_body.new(attachment.path(style_name))
             ]
           else
             # Invalid hash, just 403
