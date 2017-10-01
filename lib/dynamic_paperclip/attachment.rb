@@ -76,7 +76,9 @@ module DynamicPaperclip
       end
 
       def path_with_wildcard
-        "#{path('dynamic_*').split(/dynamic_\*/).first}dynamic_*"
+        dynamic_path = path('dynamic_*')
+        dynamic_path = "#{dynamic_path.split(/dynamic_\*/).first}dynamic_*" if dynamic_path.present?
+        return dynamic_path
       end
   end
 end
