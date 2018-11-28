@@ -14,7 +14,7 @@ Getting started
 
 ### Requirements
 
-Dynamic Paperclip requires Paperclip 3.5.0 or above and only currently supports Paperclip's File Storage.
+Dynamic Paperclip requires Paperclip 4 or above and only currently supports Paperclip's File Storage.
 
 ### Application
 
