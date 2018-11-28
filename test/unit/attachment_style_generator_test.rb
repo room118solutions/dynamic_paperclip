@@ -72,12 +72,15 @@ class DynamicPaperclip::AttachmentStyleGeneratorTest < MiniTest::Unit::TestCase
   end
 
   should 'respond with FileBody' do
-    file_body = ActionController::DataStreaming::FileBody.new(File.join(FIXTURES_DIR, 'rails.png'))
-    ActionController::DataStreaming::FileBody.expects(:new).with(File.join(FIXTURES_DIR, 'rails.png')).returns(file_body)
+    # The FileBody class has been moved to another module in Rails 5
+    file_body = defined?(ActionController::DataStreaming::FileBody) ? ActionController::DataStreaming::FileBody : ActionDispatch::Response::FileBody
+
+    image_file_body = file_body.new(File.join(FIXTURES_DIR, 'rails.png'))
+    file_body.expects(:new).with(File.join(FIXTURES_DIR, 'rails.png')).returns(image_file_body)
 
     response = app.call(Rack::MockRequest.env_for('/system/foos/images/1/dynamic_42x42/file?s='+DynamicPaperclip::UrlSecurity.generate_hash('dynamic_42x42')))
 
-    assert_equal file_body, response[2]
+    assert_equal image_file_body, response[2]
   end
 
   should 'respond with success' do

@@ -1,5 +1,7 @@
 require 'rack/request'
-require 'action_controller/metal/data_streaming'
+
+require 'action_controller/metal/data_streaming' # For Rails 4
+require 'action_dispatch/http/response.rb' # For Rails 5
 
 module DynamicPaperclip
   class AttachmentStyleGenerator
@@ -30,6 +32,9 @@ module DynamicPaperclip
             # an existing style
             attachment.process_dynamic_style style_name unless attachment.exists?(style_name)
 
+            # The FileBody class has been moved to another module in Rails 5
+            file_body = defined?(ActionController::DataStreaming::FileBody) ? ActionController::DataStreaming::FileBody : ActionDispatch::Response::FileBody
+
             return [
               200,
               {
@@ -37,7 +42,7 @@ module DynamicPaperclip
                 'Content-Transfer-Encoding' => 'binary',
                 'Content-Disposition' => "inline; filename=#{File.basename(attachment.path(style_name))}"
               },
-              ActionController::DataStreaming::FileBody.new(attachment.path(style_name))
+              file_body.new(attachment.path(style_name))
             ]
           else
             # Invalid hash, just 403

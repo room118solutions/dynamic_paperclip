@@ -20,12 +20,12 @@ Gem::Specification.new do |s|
   s.add_dependency "paperclip", ">= 3.5.1"
   s.add_dependency 'activesupport'
 
-  # Required for ActionController::DataStreaming::FileBody
+  # Required for ActionController::DataStreaming::FileBody (Rails 4) or ActionDispatch::Response::FileBody (Rails 5)
   s.add_dependency "actionpack", ">= 3.2"
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'shoulda'
   s.add_development_dependency 'mocha'
-  s.add_development_dependency "rails", "~> 4.2.8"
+  s.add_development_dependency "rails", "~> 5.0.2"
   s.add_development_dependency 'appraisal'
 end
